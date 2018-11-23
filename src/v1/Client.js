@@ -150,7 +150,7 @@ module.exports = class Client {
   /**
    * Start a workflow instance
    */
-  startWorkflow(flow) {
+  async startWorkflow(flow) {
     // custom id management
     let customId = null;
     if (typeof flow.id === "function") {
@@ -191,28 +191,28 @@ module.exports = class Client {
   /**
    * Kill a workflow instance
    */
-  killWorkflow(workflowName, customId) {
+  async killWorkflow(workflowName, customId) {
     return this.updateInstance(workflowName, customId, WORKFLOW_KILL);
   }
 
   /**
    * Pause a workflow instance
    */
-  pauseWorkflow(workflowName, customId) {
+  async pauseWorkflow(workflowName, customId) {
     return this.updateInstance(workflowName, customId, WORKFLOW_PAUSE);
   }
 
   /**
    * Resume a workflow instance
    */
-  resumeWorkflow(workflowName, customId) {
+  async resumeWorkflow(workflowName, customId) {
     return this.updateInstance(workflowName, customId, WORKFLOW_RUN);
   }
 
   /**
    * Find a workflow instance
    */
-  findWorkflow(workflowName, customId) {
+  async findWorkflow(workflowName, customId) {
     const url = this.getInstanceWebsiteUrl();
 
     const params = Object.assign(
@@ -235,7 +235,7 @@ module.exports = class Client {
   /**
    * Send an event to a workflow instance
    */
-  sendEvent(workflowName, customId, eventName, eventData) {
+  async sendEvent(workflowName, customId, eventName, eventData) {
     const url = this.getSendEventURL();
 
     const body = {
@@ -251,7 +251,7 @@ module.exports = class Client {
     return http.post(url, body, { params });
   }
 
-  updateInstance(workflowName, customId, mode) {
+  async updateInstance(workflowName, customId, mode) {
     const url = this.getInstanceWorkerUrl();
 
     const body = {

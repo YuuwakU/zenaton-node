@@ -23,23 +23,25 @@ module.exports = class Engine {
     this.processor = processor;
   }
 
-  execute(jobs) {
+  async execute(jobs) {
+    if (!jobs.length) {
+      return [];
+    }
+
     // check arguments'type
     this.checkArguments(jobs);
 
     // local execution
-    if (this.processor === null || jobs.length === 0) {
-      const outputs = [];
+    if (this.processor == null) {
       // simply apply handle method
-      jobs.forEach((job) => {
-        if (this.isWorkflow(job)) {
-          outputs.push(job.handle());
-        } else if (this.isTask(job)) {
-          outputs.push(job._promiseHandle());
-        } else {
-          throw new InvalidArgumentError();
-        }
+      const outputs = jobs.map(async (job) => {
+        const handler = this.isWorkflow(job)
+          ? job.handle()
+          : job._promiseHandle();
+
+        return handler;
       });
+
       // return results
       return outputs;
     }
@@ -48,29 +50,27 @@ module.exports = class Engine {
     return this.processor.process(jobs, true);
   }
 
-  dispatch(jobs) {
+  async dispatch(jobs) {
+    if (!jobs.length) {
+      return [];
+    }
+
     // check arguments'type
     this.checkArguments(jobs);
 
     // local execution
-    if (this.processor === null || jobs.length === 0) {
-      const outputs = [];
+    if (this.processor == null) {
       // dispatch works to Zenaton
-      jobs.forEach((job) => {
-        if (this.isWorkflow(job)) {
-          const startWorkflowPromise = this.client
-            .startWorkflow(job)
-            .then(() => undefined);
-          outputs.push(startWorkflowPromise);
-        } else if (this.isTask(job)) {
-          const startTaskPromise = this.client
-            .startTask(job)
-            .then(() => undefined);
-          outputs.push(startTaskPromise);
-        } else {
-          throw new InvalidArgumentError();
-        }
+      const outputs = jobs.map(async (job) => {
+        const handler = this.isWorkflow(job)
+          ? this.client.startWorkflow(job)
+          : this.client.startTask(job);
+
+        await handler;
+
+        return undefined;
       });
+
       // return results
       return outputs;
     }
@@ -80,13 +80,15 @@ module.exports = class Engine {
   }
 
   checkArguments(jobs) {
-    jobs.forEach((job) => {
-      if (!this.isWorkflow(job) && !this.isTask(job)) {
-        throw new InvalidArgumentError(
-          "You can only execute or dispatch Zenaton Task or Workflow",
-        );
-      }
-    });
+    const allWorkflowOrTask = jobs.every(
+      (job) => this.isWorkflow(job) || this.isTask(job),
+    );
+
+    if (!allWorkflowOrTask) {
+      throw new InvalidArgumentError(
+        "You can only execute or dispatch Zenaton Task or Workflow",
+      );
+    }
   }
 
   isWorkflow(job) {

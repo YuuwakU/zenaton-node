@@ -5,11 +5,15 @@ module.exports = class Parallel {
     this.items = items;
   }
 
-  dispatch() {
-    new Engine().dispatch(this.items);
+  async dispatch() {
+    const result = await new Engine().dispatch(this.items);
+    return Promise.all(result).then((unwrappedResult) =>
+      unwrappedResult.map(() => undefined),
+    );
   }
 
-  execute() {
-    return new Engine().execute(this.items);
+  async execute() {
+    const result = await new Engine().dispatch(this.items);
+    return Promise.all(result);
   }
 };

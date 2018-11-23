@@ -5,58 +5,65 @@ const {
   ZenatonError,
 } = require("../../Errors");
 
-const getError = (e) => {
-  if (undefined === e.response) {
-    return e;
+function getError(err) {
+  if (undefined === err.response) {
+    if (err.message.includes("ECONNREFUSED")) {
+      return new ZenatonError("Zenaton agent does not seem to be started");
+    }
+
+    return err;
   }
   // get message as status text
   const message =
-    typeof e.response.statusText !== "string"
+    typeof err.response.statusText !== "string"
       ? "Unknown error"
-      : e.response.statusText;
+      : err.response.statusText;
   // get status code
-  if (e.response.status !== parseInt(e.response.status, 10)) {
+  if (err.response.status !== parseInt(err.response.status, 10)) {
     return new ZenatonError(`${message} - please contact Zenaton support`);
   }
   // Internal Server Error
-  if (e.response.status >= 500) {
+  if (err.response.status >= 500) {
     return new InternalZenatonError(
       `${message} - please contact Zenaton support`,
     );
   }
   // User error
   if (
-    undefined === e.response.data ||
-    typeof e.response.data.error !== "string"
+    undefined === err.response.data ||
+    typeof err.response.data.error !== "string"
   ) {
     return new ExternalZenatonError(message);
   }
-  return new ExternalZenatonError(e.response.data.error);
-};
+  return new ExternalZenatonError(err.response.data.error);
+}
 
-const get = (url, options) =>
-  axios
-    .get(url, options)
-    .then((result) => result.data)
-    .catch((error) => {
-      throw getError(error);
-    });
+async function get(url, options) {
+  try {
+    const response = await axios.get(url, options);
+    return response.data;
+  } catch (err) {
+    throw getError(err);
+  }
+}
 
-const post = (url, body, options) =>
-  axios
-    .post(url, body, options)
-    .then((result) => result.data)
-    .catch((error) => {
-      throw getError(error);
-    });
+async function post(url, body, options) {
+  try {
+    const response = await axios.post(url, body, options);
+    return response.data;
+  } catch (err) {
+    throw getError(err);
+  }
+}
 
-const put = (url, body, options) =>
-  axios
-    .put(url, body, options)
-    .then((result) => result.data)
-    .catch((error) => {
-      throw getError(error);
-    });
+async function put(url, body, options) {
+  try {
+    const response = await axios.put(url, body, options);
+    return response.data;
+  } catch (err) {
+    throw getError(err);
+  }
+}
 
 module.exports.get = get;
 module.exports.post = post;

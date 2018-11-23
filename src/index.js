@@ -24,6 +24,9 @@ const Parallel = require("./v1/Parallel/Parallel");
 if (!Array.prototype.dispatch) {
   // eslint-disable-next-line no-extend-native
   Array.prototype.dispatch = function dispatch() {
+    console.warn(
+      "DeprecationWarning: Usage of '[].dispatch()' is deprecated. Please use 'new Parallel([]).dispatch()' instead.",
+    );
     new Engine().dispatch(this);
   };
 }
@@ -32,6 +35,9 @@ if (!Array.prototype.dispatch) {
 if (!Array.prototype.execute) {
   // eslint-disable-next-line no-extend-native
   Array.prototype.execute = function execute() {
+    console.warn(
+      "DeprecationWarning: Usage of '[].execute()' is deprecated. Please use 'new Parallel([]).execute()' instead.",
+    );
     return new Engine().execute(this);
   };
 }

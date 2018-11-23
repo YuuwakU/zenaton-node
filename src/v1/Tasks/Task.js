@@ -80,13 +80,31 @@ module.exports = function taskFunc(name, task) {
       // special handle method returning a promise
       this._promiseHandle = function _promiseHandle() {
         return new Promise((resolve, reject) => {
-          that.handle((err, data2) => {
+          /* Here we use a clever trick to allow both the usage of the 'done' callback
+           * or a promise to complete task execution */
+          let doneWasCalled = false;
+
+          const handleResult = that.handle((err, result) => {
+            doneWasCalled = true;
+
+            console.warn(
+              "DeprecationWarning: Usage of 'done' callback to complete tasks is deprecated. Have them return a promise instead.",
+            );
+
             if (err) {
               reject(err);
               return;
             }
-            resolve(data2);
+            resolve(result);
           });
+
+          if (handleResult instanceof Promise) {
+            handleResult.then((unwrappedResult) => {
+              if (!doneWasCalled) {
+                resolve(unwrappedResult);
+              }
+            }, reject);
+          }
         });
       };
     }

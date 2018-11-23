@@ -10,7 +10,7 @@ Node 5 and later.
 
 Install the package with:
 
-```
+```bash
 npm install zenaton --save
 ```
 
@@ -20,24 +20,25 @@ You should have a `.env` file with `ZENATON_APP_ID`, `ZENATON_API_TOKEN` and `ZE
 
 The package needs to be configured with them:
 
-```
+```javascript
 require("dotenv").config();
+const { Client } = require("zenaton");
 
-var app_id = process.env.ZENATON_APP_ID;
-var api_token = process.env.ZENATON_API_TOKEN;
-var app_env = process.env.ZENATON_APP_ENV;
+const app_id = process.env.ZENATON_APP_ID;
+const api_token = process.env.ZENATON_API_TOKEN;
+const app_env = process.env.ZENATON_APP_ENV;
 
-require("zenaton").Client.init(app_id, api_token, app_env);
+Client.init(app_id, api_token, app_env);
 ```
 
 ## Writing Workflows and Tasks
 
 Writing a workflow is as simple as:
 
-```
+```javascript
 var { Workflow } = require("zenaton");
 
-module.exports = Workflow("MyWorkflow", function() {
+module.exports = Workflow("MyWorkflow", async function() {
   // workflow implementation
 });
 ```
@@ -47,11 +48,11 @@ see [documentation](https://zenaton.com/app/documentation#workflow-basics-implem
 
 Writing a task is as simple as:
 
-```
-var { Task } = require('zenaton')
+```javascript
+const { Task } = require('zenaton');
 
-module.exports = Task("SimpleTask", function(done) {
-  // task implementation ending by done(error, result)
+module.exports = Task("SimpleTask", async function() {
+  // task implementation returning a promise
 });
 ```
 

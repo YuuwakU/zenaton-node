@@ -18,15 +18,19 @@ module.exports = class QueryBuilder {
   /**
    * Retrieve an instance
    */
-  find() {
-    return this.client.findWorkflow(this.workflowClass, this.id);
+  async find() {
+    const instance = await this.client.findWorkflow(
+      this.workflowClass,
+      this.id,
+    );
+    return instance;
   }
 
   /**
    * Send an event to a workflow instance
    */
-  send(eventName, eventData) {
-    return this.client.sendEvent(
+  async send(eventName, eventData = {}) {
+    await this.client.sendEvent(
       this.workflowClass,
       this.id,
       eventName,
@@ -37,27 +41,21 @@ module.exports = class QueryBuilder {
   /**
    * Kill a workflow instance
    */
-  kill() {
-    this.client.killWorkflow(this.workflowClass, this.id);
-
-    return this;
+  async kill() {
+    await this.client.killWorkflow(this.workflowClass, this.id);
   }
 
   /**
    * Pause a workflow instance
    */
-  pause() {
-    this.client.pauseWorkflow(this.workflowClass, this.id);
-
-    return this;
+  async pause() {
+    await this.client.pauseWorkflow(this.workflowClass, this.id);
   }
 
   /**
    * Resume a workflow instance
    */
-  resume() {
-    this.client.resumeWorkflow(this.workflowClass, this.id);
-
-    return this;
+  async resume() {
+    await this.client.resumeWorkflow(this.workflowClass, this.id);
   }
 };

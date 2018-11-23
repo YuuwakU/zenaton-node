@@ -28,11 +28,6 @@ module.exports = function workflowFunc(name, flow) {
         'Your workflow MUST define a "handle" method',
       );
     }
-    if (undefined !== flow._promiseHandle) {
-      throw new InvalidArgumentError(
-        'Your workflow can NOT redefine a "_promiseHandle" method',
-      );
-    }
     AbstractWorkflow.methods().forEach((method) => {
       if (undefined !== flow[method] && typeof flow[method] !== "function") {
         throw new InvalidArgumentError(`"${method}" method must be a function`);
@@ -80,18 +75,6 @@ module.exports = function workflowFunc(name, flow) {
           }
         });
       }
-      // special handle method returning a promise
-      this._promiseHandle = function _promiseHandle() {
-        return new Promise((resolve, reject) => {
-          that.handle((err, data2) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-            resolve(data2);
-          });
-        });
-      };
     }
 
     /**
