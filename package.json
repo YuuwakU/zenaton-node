@@ -9,7 +9,8 @@
     "lint": "eslint --color .",
     "format": "prettier --write '**/*.{js,json,css,md}'",
     "precommit": "lint-staged",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "test:watch": "mocha --watch"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "@babel/preset-env": "7.1.6",
     "babel-plugin-transform-builtin-extend": "1.1.2",
     "babel-preset-env": "1.6.1",
+    "chai": "4.2.0",
     "eslint": "5.9.0",
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-config-prettier": "3.3.0",
@@ -43,6 +45,7 @@
     "eslint-plugin-prettier": "3.0.0",
     "husky": "1.2.0",
     "lint-staged": "8.1.0",
+    "mocha": "5.2.0",
     "prettier": "1.15.2"
   }
 }

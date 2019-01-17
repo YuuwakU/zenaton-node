@@ -2,7 +2,8 @@
   "root": true,
   "env": {
     "es6": true,
-    "node": true
+    "node": true,
+    "mocha": true
   },
   "extends": ["airbnb-base", "plugin:node/recommended", "prettier"],
   "plugins": ["prettier"],
@@ -20,6 +21,7 @@
     "class-methods-use-this": ["off"],
     "no-console": ["off"],
     "no-underscore-dangle": ["off"],
+    "no-use-before-define": ["off"],
     "node/no-unsupported-features/es-syntax": [
       "error",
       {
