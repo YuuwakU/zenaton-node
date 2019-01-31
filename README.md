@@ -4,7 +4,7 @@ This Zenaton library for Node lets you code and launch workflows using Zenaton p
 
 ## Requirements
 
-Node 5 and later.
+Node 6 and later.
 
 ## Installation
 
@@ -81,4 +81,4 @@ where `.env` is the env file containing your credentials, and `boot.js` is a fil
 
 ## Documentation
 
-Please see https://zenaton.com/documentation for complete documentation.
+Please see https://zenaton.com/documentation?lang=node# for complete documentation.
